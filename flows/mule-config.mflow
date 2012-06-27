@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-configuration xmlns="http://www.mulesoft.com/tooling/messageflow" name="mule-config">
+    <global-unknown entity-id="83ba3865-e057-4959-90a5-73506ca0c41b">
+        <content>&lt;configuration xmlns=&quot;http://www.mulesoft.org/schema/mule/core&quot;&gt;
+         	  &lt;default-threading-profile maxThreadsActive=&quot;2&quot; poolExhaustedAction=&quot;WAIT&quot; threadWaitTimeout=&quot;-1&quot;/&gt;
+         &lt;/configuration&gt;</content>
+    </global-unknown>
+    <global-element type="http://www.springframework.org/schema/beans/bean" name="Global Configuration" entity-id="3e518a60-7b16-4769-ae2f-063464e074a9">
+        <properties>
+            <property value="configProperties" name="id"/>
+            <property value="configProperties" name="name"/>
+            <property value="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" name="class"/>
+            <property name="parent"/>
+            <property name="scope"/>
+            <property name="abstract"/>
+            <property name="lazy-init"/>
+            <property name="autowire"/>
+            <property name="depends-on"/>
+            <property name="autowire-candidate"/>
+            <property name="primary"/>
+            <property name="init-method"/>
+            <property name="destroy-method"/>
+            <property name="factory-method"/>
+            <property name="factory-bean"/>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;0">
+                <property value="location" name="name"/>
+                <property value="classpath:config.properties" name="value"/>
+            </property-collection>
+        </properties>
+    </global-element>
+    <global-element type="http://www.springframework.org/schema/beans/bean" name="Bean" entity-id="48f51574-c667-429d-bbba-8abe62800668">
+        <properties>
+            <property value="jdbcDataSource" name="id"/>
+            <property name="name"/>
+            <property value="org.enhydra.jdbc.standard.StandardDataSource" name="class"/>
+            <property name="parent"/>
+            <property name="scope"/>
+            <property name="abstract"/>
+            <property name="lazy-init"/>
+            <property name="autowire"/>
+            <property name="depends-on"/>
+            <property name="autowire-candidate"/>
+            <property name="primary"/>
+            <property name="init-method"/>
+            <property value="shutdown" name="destroy-method"/>
+            <property name="factory-method"/>
+            <property name="factory-bean"/>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;0">
+                <property value="driverName" name="name"/>
+                <property value="${database.driver}" name="value"/>
+            </property-collection>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;1">
+                <property value="url" name="name"/>
+                <property value="${database.connection}" name="value"/>
+            </property-collection>
+        </properties>
+    </global-element>
+    <global-unknown wrapNSURL="http://www.springframework.org/schema/beans" wrapNSPref="spring" wrapIn="beans" entity-id="9f188560-cc82-44a9-bd5f-2392b3fe849d">
+        <content>&lt;bridgetable:config xmlns:bridgetable=&quot;http://www.mulesoft.org/schema/mule/bridgetable&quot; name=&quot;topicId_messageId&quot; key1Type=&quot;STRING&quot; key2Type=&quot;STRING&quot; key1Name=&quot;key1&quot; key2Name=&quot;key2&quot; tableName=&quot;topicId_messageId&quot; type=&quot;DATA_SOURCE&quot; dataSource-ref=&quot;jdbcDataSource&quot; autoCreateTable=&quot;true&quot;/&gt;</content>
+    </global-unknown>
+    <global-unknown wrapNSURL="http://www.springframework.org/schema/beans" wrapNSPref="spring" wrapIn="beans" entity-id="66f875b3-92eb-4043-96a7-8db8c490ac04">
+        <content>&lt;bridgetable:config xmlns:bridgetable=&quot;http://www.mulesoft.org/schema/mule/bridgetable&quot; name=&quot;replyId_messageId&quot; key1Type=&quot;STRING&quot; key2Type=&quot;STRING&quot; key1Name=&quot;key1&quot; key2Name=&quot;key2&quot; tableName=&quot;replyId_messageId&quot; type=&quot;DATA_SOURCE&quot; dataSource-ref=&quot;jdbcDataSource&quot; autoCreateTable=&quot;true&quot;/&gt;</content>
+    </global-unknown>
+    <global-element type="http://www.springframework.org/schema/beans/bean" name="Default Community User" entity-id="3a0bb86a-5797-4e89-a0d1-b2a9b93cbfcc">
+        <properties>
+            <property value="communityUser" name="id"/>
+            <property value="org.mule.module.getsatisfaction.getsatisfaction.api.User" name="class"/>
+            <property name="parent"/>
+            <property name="scope"/>
+            <property name="abstract"/>
+            <property name="lazy-init"/>
+            <property name="autowire"/>
+            <property name="depends-on"/>
+            <property name="autowire-candidate"/>
+            <property name="primary"/>
+            <property name="init-method"/>
+            <property name="destroy-method"/>
+            <property name="factory-method"/>
+            <property name="factory-bean"/>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;0">
+                <property value="uid" name="name"/>
+                <property value="${community.user.uid}" name="value"/>
+            </property-collection>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;1">
+                <property value="fullName" name="name"/>
+                <property value="${community.user.fullName}" name="value"/>
+            </property-collection>
+            <property-collection name="@http://www.springframework.org/schema/beans/property;2">
+                <property value="email" name="name"/>
+                <property value="${community.user.email}" name="value"/>
+            </property-collection>
+        </properties>
+    </global-element>
+    <global-element type="http://www.springframework.org/schema/beans/bean" name="Bean" entity-id="dbc789cb-cc11-4234-9f47-86127ec70dc7">
+        <properties>
+            <property name="id"/>
+            <property value="listMappings" name="name"/>
+            <property value="java.util.HashMap" name="class"/>
+            <property name="parent"/>
+            <property name="scope"/>
+            <property name="abstract"/>
+            <property name="lazy-init"/>
+            <property name="autowire"/>
+            <property name="depends-on"/>
+            <property name="autowire-candidate"/>
+            <property name="primary"/>
+            <property name="init-method"/>
+            <property name="destroy-method"/>
+            <property name="factory-method"/>
+            <property name="factory-bean"/>
+            <property-collection name="@http://www.springframework.org/schema/beans/constructor-arg;0"/>
+        </properties>
+    </global-element>
+    <global-unknown entity-id="7fb4b109-2604-4dea-a813-3c8833986642">
+        <content>&lt;objectstore:config xmlns:objectstore=&quot;http://www.mulesoft.org/schema/mule/objectstore&quot; name=&quot;pollingConfig&quot; partition=&quot;pollingConfig&quot; persistent=&quot;true&quot;/&gt;</content>
+    </global-unknown>
+    <global-unknown entity-id="86c93204-d00b-4127-88b1-8affd02405ae">
+        <content>&lt;objectstore:config xmlns:objectstore=&quot;http://www.mulesoft.org/schema/mule/objectstore&quot; name=&quot;topicIds&quot; partition=&quot;topicIds&quot; persistent=&quot;true&quot;/&gt;</content>
+    </global-unknown>
+    <global-unknown entity-id="8e55a31a-c4ca-447a-bff7-78b126739976">
+        <content>&lt;objectstore:config xmlns:objectstore=&quot;http://www.mulesoft.org/schema/mule/objectstore&quot; name=&quot;messageIds&quot; partition=&quot;messageIds&quot; persistent=&quot;true&quot;/&gt;</content>
+    </global-unknown>
+    <global-unknown entity-id="76a5fedb-62a1-4aa3-a399-08cdd611323c">
+        <content>&lt;objectstore:config xmlns:objectstore=&quot;http://www.mulesoft.org/schema/mule/objectstore&quot; name=&quot;replyMessageIds&quot; partition=&quot;replyMessageIds&quot; persistent=&quot;true&quot;/&gt;</content>
+    </global-unknown>
+    <global-unknown entity-id="2bc90af3-dd37-4a16-8db0-b7077935cf23">
+        <content>&lt;ldap:config xmlns:ldap=&quot;http://www.mulesoft.org/schema/mule/ldap&quot; name=&quot;ldap&quot; url=&quot;${ldap.url}&quot; authentication=&quot;simple&quot; authDn=&quot;${ldap.userDn}&quot; authPassword=&quot;${ldap.password}&quot;/&gt;</content>
+    </global-unknown>
+    <global-element type="http://www.mulesoft.org/schema/mule/smtp/gmail-connector" name="Gmail" entity-id="c26257ed-5d9f-4a0e-b5f5-ea64cec6247c">
+        <properties>
+            <property value="emailSender" name="name"/>
+            <property name="bccAddresses"/>
+            <property name="ccAddresses"/>
+            <property value="text/html" name="contentType"/>
+            <property name="fromAddress"/>
+            <property name="replyToAddresses"/>
+            <property name="subject"/>
+            <property name="dispatcherPoolFactory-ref"/>
+            <property name="dynamicNotification"/>
+            <property name="validateConnections"/>
+        </properties>
+    </global-element>
+    <global-element type="http://www.mulesoft.org/schema/mule/pop3s/connector" name="Email Sender" entity-id="2077ab2d-a8f6-4a9b-b384-c5757e255212">
+        <properties>
+            <property value="emailReceiver" name="name"/>
+            <property name="backupFolder"/>
+            <property name="mailboxFolder"/>
+            <property name="moveToFolder"/>
+            <property name="dispatcherPoolFactory-ref"/>
+            <property name="dynamicNotification"/>
+            <property name="validateConnections"/>
+            <property name="backupEnabled"/>
+            <property name="deleteReadMessages"/>
+            <property value="${gateway.email.polling.frequency}" name="checkFrequency"/>
+            <property name="defaultProcessMessageAction"/>
+            <property value="http://www.mulesoft.org/schema/mule/pop3s/connector" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+        </properties>
+    </global-element>
+    <global-unknown entity-id="ff7ba817-84a1-4c25-b1c1-44adb0741ae1">
+        <content>&lt;getsatisfaction:config xmlns:getsatisfaction=&quot;http://www.mulesoft.org/schema/mule/getsatisfaction&quot; name=&quot;getSatisfaction&quot; key=&quot;1fjo088bougl&quot; secret=&quot;aqfi8q65z031wlhqsrj37rhuv1qlwy78&quot; company=&quot;mulesoft&quot;/&gt;</content>
+    </global-unknown>
+    <global-element type="http://www.mulesoft.org/schema/mule/core/custom-transformer" name="Forum post to email message" entity-id="9f14b840-2ccf-480d-9e7a-6b989ca27b45">
+        <properties>
+            <property name="returnClass"/>
+            <property name="ignoreBadInput"/>
+            <property name="encoding"/>
+            <property name="mimeType"/>
+            <property value="org.mule.egateway.transformers.ForumPostToEmailMessage" name="class"/>
+            <property value="ForumPostToEmailMessage" name="name"/>
+        </properties>
+    </global-element>
+    <global-element type="http://www.mulesoft.org/schema/mule/core/custom-transformer" name="Forum reply to email message" entity-id="1a91539a-322b-44c4-a462-1ced4e7a73b7">
+        <properties>
+            <property name="returnClass"/>
+            <property name="ignoreBadInput"/>
+            <property name="encoding"/>
+            <property name="mimeType"/>
+            <property value="org.mule.egateway.transformers.ForumReplyToEmailMessage" name="class"/>
+            <property value="ForumReplyToEmailMessage" name="name"/>
+        </properties>
+    </global-element>
+    <flow SubFlow="false" name="email-to-forum">
+        <properties>
+            <property name="processingStrategy2"/>
+            <property name="processingStrategy"/>
+        </properties>
+        <lane entity-id="9d95b8fb-66d8-4ec0-924c-c9af9ff4f3b7">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/pop3s/endpoint" name="Pop3" entity-id="54331c9e-1d60-49c4-8f13-34ff986ee0cd">
+                <properties>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="${gateway.email.reader.host}" name="host"/>
+                    <property value="${gateway.email.reader.port}" name="port"/>
+                    <property value="${gateway.email.user}" name="user"/>
+                    <property value="${gateway.email.password}" name="password"/>
+                    <property name="address"/>
+                    <property name="responseTimeout"/>
+                    <property name="encoding"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="mimeType"/>
+                    <property name="ref"/>
+                    <property value="emailReceiver" name="connector-ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="responseTransformer-refs"/>
+                    <property value="http://www.mulesoft.org/schema/mule/pop3s/endpoint" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+                </properties>
+            </endpoint>
+            <scope type="org.mule.tooling.ui.modules.core.scope.enricher" name="Message Enricher" entity-id="35df88cc-b06f-4c9e-8ee8-7101b2ec718e">
+                <properties>
+                    <property name="source"/>
+                    <property value="#[variable:ldapUser]" name="target"/>
+                </properties>
+                <compartment entity-id="93b905ce-2f8a-4046-b061-501535ef0af8">
+                    <lane entity-id="cd24f3ca-7439-4cf0-ac97-d880d7d2404f">
+                        <scope type="http://www.mulesoft.org/schema/mule/core/processor-chain" name="Processor Chain" entity-id="34ae3155-1ddd-4ee4-a999-8263aa68fce2">
+                            <compartment entity-id="1d2c1085-2676-4e7a-8c36-1bb1cc5bd7bc"/>
+                        </scope>
+                    </lane>
+                </compartment>
+            </scope>
+            <pattern type="org.mule.tooling.ui.modules.core.pattern.customTransformer" name="Email message to forum post" entity-id="f2ed5017-0356-48f3-890a-ababc836699d">
+                <properties>
+                    <property name="returnClass"/>
+                    <property name="ignoreBadInput"/>
+                    <property name="encoding"/>
+                    <property name="mimeType"/>
+                    <property value="org.mule.egateway.transformers.EmailMessageToForumPost" name="class"/>
+                </properties>
+            </pattern>
+            <pattern type="org.mule.tooling.ui.modules.core.filter.PayloadFilter" name="Payload" entity-id="c11223b3-55b1-42c8-b2dd-fbea8af8c53a">
+                <properties>
+                    <property value="org.mule.module.getsatisfaction.getsatisfaction.api.Post" name="expectedType"/>
+                </properties>
+            </pattern>
+            <splitter type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="dfcecfb6-b97e-4498-95fc-d9267e0dbf26">
+                <properties>
+                    <property-collection name="4d653af1-3a27-466e-a8c2-0a5687c25b10">
+                        <property value="payload.isReply()" name="choice.expression"/>
+                        <property value="groovy" name="choice.evaluator"/>
+                    </property-collection>
+                    <property-collection name="ad6990b4-fbf8-443f-bd31-92fb1e45ce7d">
+                        <property value="true" name="choice.otherwise"/>
+                    </property-collection>
+                    <property-collection name="f2d29f6c-d364-4105-bfd8-6ab0ce8f0db2">
+                        <property value="payload.isTopic()" name="choice.expression"/>
+                        <property value="groovy" name="choice.evaluator"/>
+                    </property-collection>
+                </properties>
+                <pattern type="org.mule.tooling.ui.modules.core.pattern.cbr" name="Choice" entity-id="9a4dca05-e2ae-4519-a300-913157e22b74"/>
+                <compartment entity-id="67ba4b5f-9a86-4a73-96b1-ec0d86473f17">
+                    <lane entity-id="f2d29f6c-d364-4105-bfd8-6ab0ce8f0db2">
+                        <unknown entity-id="c23a2785-dd18-40c4-ba2f-aa670b951261">
+                            <content>&lt;getsatisfaction:create-topic xmlns:getsatisfaction=&quot;http://www.mulesoft.org/schema/mule/getsatisfaction&quot; config-ref=&quot;getSatisfaction&quot; style=&quot;#[groovy:payload.style.toUpperCase()]&quot; email=&quot;#[groovy:payload.user.email]&quot; uid=&quot;#[groovy:payload.user.uid]&quot; fullName=&quot;#[groovy:payload.user.fullName]&quot; subject=&quot;#[groovy:payload.subject]&quot; content=&quot;#[groovy:payload.content]&quot;&gt;
+	            		&lt;getsatisfaction:product-ids&gt;
+	            			&lt;getsatisfaction:product-id&gt;Mule ESB&lt;/getsatisfaction:product-id&gt;
+	            		&lt;/getsatisfaction:product-ids&gt;
+	            	&lt;/getsatisfaction:create-topic&gt;</content>
+                        </unknown>
+                        <pattern type="org.mule.tooling.ui.modules.core.pattern.logger" name="Logger" entity-id="b0869139-f184-4fee-8538-d3600c80abd4">
+                            <properties>
+<property value="topicIds[messageId -&gt; topicId] =&gt; [#[header:outbound:Message-ID]] -&gt; [#[groovy:payload.id.toString()]]" name="message"/>
+<property value="INFO" name="level"/>
+<property name="category"/>
+                            </properties>
+                        </pattern>
+                        <pattern type="org.mule.tooling.ui.modules.core.pattern.logger" name="Logger" entity-id="8792dbdc-80e0-4e16-a0ed-817b23759e44">
+                            <properties>
+<property value="messageIds[topicId -&gt; messageId] =&gt; [#[groovy:payload.id.toString()]] -&gt; [#[header:outbound:Message-ID]]" name="message"/>
+<property value="INFO" name="level"/>
+<property name="category"/>
+                            </properties>
+                        </pattern>
+                        <unknown entity-id="77e0b921-cd30-4136-8e6e-a1b9fe9f249b">
+                            <content>&lt;objectstore:store xmlns:objectstore=&quot;http://www.mulesoft.org/schema/mule/objectstore&quot; config-ref=&quot;topicIds&quot; key=&quot;#[header:outbound:Message-ID]&quot; value-ref=&quot;#[groovy:payload.id.toString()]&quot;/&gt;</content>
+                        </unknown>
+                        <unknown entity-id="04ade4d9-c1db-4e34-bfeb-a1ce6345fa3f">
+                            <content>&lt;objectstore:store xmlns:objectstore=&quot;http://www.mulesoft.org/schema/mule/objectstore&quot; config-ref=&quot;messageIds&quot; key=&quot;#[groovy:payload.id.toString()]&quot; value-ref=&quot;#[header:outbound:Message-ID]&quot;/&gt;</content>
+                        </unknown>
+                        <unknown entity-id="9281ee02-16b9-49be-be0a-b7a4287287c5">
+                            <content>&lt;bridgetable:insert xmlns:bridgetable=&quot;http://www.mulesoft.org/schema/mule/bridgetable&quot; key1=&quot;#[groovy:payload.id.toString()]&quot; key2=&quot;#[header:outbound:Message-ID]&quot; config-ref=&quot;topicId_messageId&quot;/&gt;</content>
+                        </unknown>
+                    </lane>
+                    <lane entity-id="4d653af1-3a27-466e-a8c2-0a5687c25b10">
+                        <unknown entity-id="35f2ffc6-b40f-4281-91d5-d4f2cca163fc">
+                            <content>&lt;getsatisfaction:create-reply xmlns:getsatisfaction=&quot;http://www.mulesoft.org/schema/mule/getsatisfaction&quot; config-ref=&quot;getSatisfaction&quot; email=&quot;#[groovy:payload.user.email]&quot; uid=&quot;#[groovy:payload.user.uid]&quot; fullName=&quot;#[groovy:payload.user.fullName]&quot; topicId=&quot;#[groovy:String.valueOf(payload.topicId)]&quot; content=&quot;#[groovy:payload.content]&quot;/&gt;</content>
+                        </unknown>
+                        <pattern type="org.mule.tooling.ui.modules.core.pattern.logger" name="Logger" entity-id="41a616e8-9f70-4a23-bd45-be50799c19c2">
+                            <properties>
+<property value="replyMessageIds[replyId -&gt; messageId] =&gt; [#[groovy:payload.id]] -&gt; [#[header:outbound:Message-ID]]" name="message"/>
+<property value="INFO" name="level"/>
+<property name="category"/>
+                            </properties>
+                        </pattern>
+                        <unknown entity-id="d7cd427a-cafd-44d0-983f-37ab1e6d1109">
+                            <content>&lt;objectstore:store xmlns:objectstore=&quot;http://www.mulesoft.org/schema/mule/objectstore&quot; config-ref=&quot;replyMessageIds&quot; key=&quot;#[groovy:payload.id]&quot; value-ref=&quot;#[header:outbound:Message-ID]&quot;/&gt;</content>
+                        </unknown>
+                        <unknown entity-id="9bca515b-7203-4e5b-ae15-32230ec68564">
+                            <content>&lt;bridgetable:insert xmlns:bridgetable=&quot;http://www.mulesoft.org/schema/mule/bridgetable&quot; key1=&quot;#[groovy:payload.id]&quot; key2=&quot;#[header:outbound:Message-ID]&quot; config-ref=&quot;replyId_messageId&quot;/&gt;</content>
+                        </unknown>
+                    </lane>
+                    <lane entity-id="ad6990b4-fbf8-443f-bd31-92fb1e45ce7d">
+                        <pattern type="org.mule.tooling.ui.modules.core.pattern.logger" name="Logger" entity-id="7177a615-6703-47c9-8248-110541bdbbc3">
+                            <properties>
+<property value="Invalid payload type #[groovy:payload.getClass().getName()]" name="message"/>
+<property value="WARN" name="level"/>
+<property name="category"/>
+                            </properties>
+                        </pattern>
+                    </lane>
+                </compartment>
+            </splitter>
+        </lane>
+    </flow>
+    <flow SubFlow="false" name="forum-to-email">
+        <properties>
+            <property name="processingStrategy2"/>
+            <property name="processingStrategy"/>
+        </properties>
+        <lane entity-id="83963edd-b885-40f6-89df-01a0ae1b065f">
+            <multi-source type="org.mule.tooling.ui.modules.core.endpoint.Poller" name="Poll" entity-id="ab3f4474-e992-4c0b-81d9-1801898acf8e">
+                <properties>
+                    <property value="${gateway.forum.polling.frequency}" name="frequency"/>
+                </properties>
+            </multi-source>
+            <pattern type="http://www.mulesoft.org/schema/mule/core/message-properties-transformer" name="New last poll value" entity-id="fd14287e-fc04-459f-b3cc-f09fc4c63024">
+                <properties>
+                    <property name="returnClass"/>
+                    <property name="ignoreBadInput"/>
+                    <property name="encoding"/>
+                    <property name="mimeType"/>
+                    <property name="overwrite"/>
+                    <property value="invocation" name="scope"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/core/add-message-property;0">
+                        <property value="#[payload:]" name="value"/>
+                        <property value="lastPoll" name="key"/>
+                    </property-collection>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/core/add-message-property;1">
+                        <property value="#[groovy:String.valueOf((long)(System.currentTimeMillis() / 1000))]" name="value"/>
+                        <property value="newLastPoll" name="key"/>
+                    </property-collection>
+                </properties>
+            </pattern>
+            <unknown entity-id="2a0c679f-cbf4-40c1-8bd9-4fc28c4d57d3">
+                <content>&lt;objectstore:store xmlns:objectstore=&quot;http://www.mulesoft.org/schema/mule/objectstore&quot; config-ref=&quot;pollingConfig&quot; key=&quot;lastPoll&quot; value-ref=&quot;#[header:invocation:lastPoll]&quot; overwrite=&quot;true&quot;/&gt;</content>
+            </unknown>
+            <unknown entity-id="27f3e0c3-8a74-4386-9863-ba26cf572f27">
+                <content>&lt;getsatisfaction:search-topics xmlns:getsatisfaction=&quot;http://www.mulesoft.org/schema/mule/getsatisfaction&quot; email=&quot;${community.user.email}&quot; uid=&quot;${community.user.uid}&quot; fullName=&quot;${community.user.fullName}&quot; config-ref=&quot;getSatisfaction&quot; filter=&quot;#[groovy:'active_since=' + payload]&quot;/&gt;</content>
+            </unknown>
+            <pattern type="org.mule.tooling.ui.modules.core.filter.Expression" name="Expression" entity-id="19758b34-cf5d-4299-b25c-dbce242f4870">
+                <properties>
+                    <property value="groovy" name="evaluator"/>
+                    <property value="payload != null &amp;&amp; payload instanceof java.util.Collection &amp;&amp; payload.size() &gt; 0" name="expression"/>
+                    <property name="customEvaluator"/>
+                    <property name="nullReturnsTrue"/>
+                </properties>
+            </pattern>
+            <pattern type="http://www.mulesoft.org/schema/mule/core/collection-splitter" name="Collection Splitter" entity-id="bc7a999d-b9d2-49c2-a58c-d44d78c864d8">
+                <properties>
+                    <property name="enableCorrelation"/>
+                </properties>
+            </pattern>
+            <splitter type="org.mule.tooling.ui.modules.core.pattern.all" name="All" entity-id="8f7141c4-7aa3-4888-8541-e5fe841c3426">
+                <pattern type="org.mule.tooling.ui.modules.core.pattern.all" name="All" entity-id="eb3af161-bc03-461e-a3f9-3f358985f0bb"/>
+                <compartment entity-id="0f2d0ee0-4ffd-487a-8ad4-c33f287f1e6a">
+                    <lane entity-id="b13f80e0-e165-467b-9753-1494c7c41dbb">
+                        <unknown entity-id="264825bc-771d-47d8-89a0-080ead668f7c">
+                            <content>&lt;objectstore:store xmlns:objectstore=&quot;http://www.mulesoft.org/schema/mule/objectstore&quot; config-ref=&quot;pollingConfig&quot; key=&quot;lastPoll&quot; value-ref=&quot;#[header:invocation:newLastPoll]&quot; overwrite=&quot;true&quot;/&gt;</content>
+                        </unknown>
+                        <pattern type="org.mule.tooling.ui.modules.core.pattern.customTransformer" name="Email message to forum post" entity-id="c6010ed8-3edc-4a21-a9ff-b385ce7e430a">
+                            <properties>
+<property name="returnClass"/>
+<property name="ignoreBadInput"/>
+<property name="encoding"/>
+<property name="mimeType"/>
+<property value="org.mule.egateway.transformers.DuplicatedTopicTransformer" name="class"/>
+                            </properties>
+                        </pattern>
+                        <pattern type="org.mule.tooling.ui.modules.core.filter.PayloadFilter" name="Payload" entity-id="4d2e71ac-09e8-42f8-ae05-18ea16506a5f">
+                            <properties>
+<property value="org.mule.module.getsatisfaction.getsatisfaction.api.Post" name="expectedType"/>
+                            </properties>
+                        </pattern>
+                        <pattern type="org.mule.tooling.ui.modules.core.pattern.logger" name="Logger" entity-id="b0c0b830-041b-4902-b66c-4c17a4c46a7d">
+                            <properties>
+<property value="Sending topic email: #[payload:]" name="message"/>
+<property value="INFO" name="level"/>
+<property name="category"/>
+                            </properties>
+                        </pattern>
+                        <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/smtps/endpoint" name="SMTP Outbound" entity-id="c8fc9afe-5eb9-4d3f-8719-9ac2055bf644">
+                            <properties>
+<property value="one-way" name="exchange-pattern"/>
+<property value="${gateway.email.sender.host}" name="host"/>
+<property value="${gateway.email.sender.port}" name="port"/>
+<property value="${gateway.email.user}" name="user"/>
+<property value="${gateway.email.password}" name="password"/>
+<property name="to"/>
+<property name="from"/>
+<property name="subject"/>
+<property name="cc"/>
+<property name="bcc"/>
+<property name="replyTo"/>
+<property name="address"/>
+<property name="responseTimeout"/>
+<property name="encoding"/>
+<property name="disableTransportTransformer"/>
+<property name="mimeType"/>
+<property name="ref"/>
+<property value="emailSender" name="connector-ref"/>
+<property value="ForumPostToEmailMessage" name="transformer-refs"/>
+<property name="responseTransformer-refs"/>
+<property value="http://www.mulesoft.org/schema/mule/smtp/endpoint" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+<property value="${gateway.email.sender.host}" name="host"/>
+<property value="${gateway.email.sender.port}" name="port"/>
+<property value="${gateway.email.user}" name="user"/>
+<property value="${gateway.email.password}" name="password"/>
+<property name="to"/>
+<property name="from"/>
+<property name="subject"/>
+<property name="cc"/>
+<property name="bcc"/>
+<property name="replyTo"/>
+<property name="address"/>
+<property name="responseTimeout"/>
+<property name="encoding"/>
+<property name="disableTransportTransformer"/>
+<property name="mimeType"/>
+<property name="ref"/>
+<property value="emailSender" name="connector-ref"/>
+<property value="ForumPostToEmailMessage" name="transformer-refs"/>
+<property name="responseTransformer-refs"/>
+                            </properties>
+                        </endpoint>
+                    </lane>
+                    <lane entity-id="fae1abd1-46c2-4b8a-9f27-e27eaf7dc819">
+                        <scope type="org.mule.tooling.ui.modules.core.scope.enricher" name="Message Enricher" entity-id="f793906e-3a3a-4560-893b-fd776da8ac97">
+                            <properties>
+<property name="source"/>
+<property value="#[variable:replies]" name="target"/>
+                            </properties>
+                            <compartment entity-id="f660a00b-6e27-4340-b1fb-f985e83fb246">
+<lane entity-id="88d7c5af-358f-4d10-9060-5b4eb094bacd">
+    <scope type="http://www.mulesoft.org/schema/mule/core/processor-chain" name="Processor Chain" entity-id="70da1f5f-81da-4751-868a-a09843cca5db">
+        <compartment entity-id="058382e8-244a-4a2b-ad28-365530fe1fba"/>
+    </scope>
+</lane>
+                            </compartment>
+                        </scope>
+                        <pattern type="org.mule.tooling.ui.modules.core.pattern.customTransformer" name="Email message to forum post" entity-id="d3322ce9-51c1-466d-a82c-f8423e19c2c7">
+                            <properties>
+<property name="returnClass"/>
+<property name="ignoreBadInput"/>
+<property name="encoding"/>
+<property name="mimeType"/>
+<property value="org.mule.egateway.transformers.AllRepliesToNewReplies" name="class"/>
+                            </properties>
+                        </pattern>
+                        <pattern type="org.mule.tooling.ui.modules.core.filter.PayloadFilter" name="Payload" entity-id="d4fc7966-0d9e-419e-9899-5f0cd4f9c7c9">
+                            <properties>
+<property value="java.util.List" name="expectedType"/>
+                            </properties>
+                        </pattern>
+                        <pattern type="http://www.mulesoft.org/schema/mule/core/collection-splitter" name="Collection Splitter" entity-id="ecec1b00-d4df-40ad-aa21-128257177b21">
+                            <properties>
+<property name="enableCorrelation"/>
+                            </properties>
+                        </pattern>
+                        <pattern type="org.mule.tooling.ui.modules.core.pattern.customTransformer" name="Email message to forum post" entity-id="742f4201-d416-42e5-ab30-9058108ea18c">
+                            <properties>
+<property name="returnClass"/>
+<property name="ignoreBadInput"/>
+<property name="encoding"/>
+<property name="mimeType"/>
+<property value="org.mule.egateway.transformers.DuplicatedReplyTransformer" name="class"/>
+                            </properties>
+                        </pattern>
+                        <pattern type="org.mule.tooling.ui.modules.core.filter.PayloadFilter" name="Payload" entity-id="892e1c72-23c8-4661-b938-3356dffda9df">
+                            <properties>
+<property value="org.mule.module.getsatisfaction.getsatisfaction.api.Post" name="expectedType"/>
+                            </properties>
+                        </pattern>
+                        <pattern type="org.mule.tooling.ui.modules.core.pattern.logger" name="Logger" entity-id="18b85908-0a6c-4eb9-98d5-a57325523926">
+                            <properties>
+<property value="Sending reply email: #[payload:]" name="message"/>
+<property value="INFO" name="level"/>
+<property name="category"/>
+                            </properties>
+                        </pattern>
+                        <endpoint message-exchange-pattern="OneWay" direction="Outbound" type="http://www.mulesoft.org/schema/mule/smtps/endpoint" name="SMTP Outbound" entity-id="2d27ed8d-c261-4ec7-97c7-2bf712d2cf74">
+                            <properties>
+<property value="one-way" name="exchange-pattern"/>
+<property value="${gateway.email.sender.host}" name="host"/>
+<property value="${gateway.email.sender.port}" name="port"/>
+<property value="${gateway.email.user}" name="user"/>
+<property value="${gateway.email.password}" name="password"/>
+<property name="to"/>
+<property name="from"/>
+<property name="subject"/>
+<property name="cc"/>
+<property name="bcc"/>
+<property name="replyTo"/>
+<property name="address"/>
+<property name="responseTimeout"/>
+<property name="encoding"/>
+<property name="disableTransportTransformer"/>
+<property name="mimeType"/>
+<property name="ref"/>
+<property value="emailSender" name="connector-ref"/>
+<property value="ForumReplyToEmailMessage" name="transformer-refs"/>
+<property name="responseTransformer-refs"/>
+<property value="http://www.mulesoft.org/schema/mule/smtp/endpoint" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+<property value="${gateway.email.sender.host}" name="host"/>
+<property value="${gateway.email.sender.port}" name="port"/>
+<property value="${gateway.email.user}" name="user"/>
+<property value="${gateway.email.password}" name="password"/>
+<property name="to"/>
+<property name="from"/>
+<property name="subject"/>
+<property name="cc"/>
+<property name="bcc"/>
+<property name="replyTo"/>
+<property name="address"/>
+<property name="responseTimeout"/>
+<property name="encoding"/>
+<property name="disableTransportTransformer"/>
+<property name="mimeType"/>
+<property name="ref"/>
+<property value="emailSender" name="connector-ref"/>
+<property value="ForumReplyToEmailMessage" name="transformer-refs"/>
+<property name="responseTransformer-refs"/>
+                            </properties>
+                        </endpoint>
+                    </lane>
+                </compartment>
+            </splitter>
+        </lane>
+    </flow>
+    <flow SubFlow="false" name="migrateBridgeTables1">
+        <properties>
+            <property name="processingStrategy2"/>
+            <property name="processingStrategy"/>
+        </properties>
+        <lane entity-id="a1aca49d-a0f1-4c6f-b318-0cf82411f594">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/http/endpoint" name="HTTP" entity-id="05ee0674-126c-4ccc-b441-84050771e965">
+                <properties>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="request-response" name="exchange-pattern"/>
+                    <property value="http://www.mulesoft.org/schema/mule/http/endpoint" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+                    <property name="httpLabel"/>
+                    <property value="localhost" name="host"/>
+                    <property value="${http.port}" name="port"/>
+                    <property value="migrate1" name="path"/>
+                    <property name="method"/>
+                    <property name="address"/>
+                    <property name="responseTimeout"/>
+                    <property name="encoding"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="mimeType"/>
+                    <property name="followRedirects"/>
+                    <property name="ref"/>
+                    <property name="connector-ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="responseTransformer-refs"/>
+                    <property name="user"/>
+                    <property name="password"/>
+                    <property name="contentType"/>
+                    <property name="keep-alive"/>
+                </properties>
+            </endpoint>
+            <unknown entity-id="45fba3f1-60eb-4b3b-bd33-8dddcab1fe7c">
+                <content>&lt;objectstore:all-keys xmlns:objectstore=&quot;http://www.mulesoft.org/schema/mule/objectstore&quot; config-ref=&quot;messageIds&quot;/&gt;</content>
+            </unknown>
+            <pattern type="http://www.mulesoft.org/schema/mule/core/collection-splitter" name="Collection Splitter" entity-id="7291427e-324e-4bd4-afef-c0782d13bda4">
+                <properties>
+                    <property name="enableCorrelation"/>
+                </properties>
+            </pattern>
+            <pattern type="http://www.mulesoft.org/schema/mule/core/message-properties-transformer" name="Message Properties" entity-id="aa42a041-73c7-4e50-99aa-201a21bf17d2">
+                <properties>
+                    <property name="returnClass"/>
+                    <property name="ignoreBadInput"/>
+                    <property name="encoding"/>
+                    <property name="mimeType"/>
+                    <property name="overwrite"/>
+                    <property value="invocation" name="scope"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/core/add-message-property;0">
+                        <property value="#[payload:]" name="value"/>
+                        <property value="topicId" name="key"/>
+                    </property-collection>
+                </properties>
+            </pattern>
+            <unknown entity-id="8b53fe55-409b-4652-a52f-a3f5275acfcc">
+                <content>&lt;objectstore:retrieve xmlns:objectstore=&quot;http://www.mulesoft.org/schema/mule/objectstore&quot; key=&quot;#[header:invocation:topicId]&quot; config-ref=&quot;messageIds&quot;/&gt;</content>
+            </unknown>
+            <pattern type="org.mule.tooling.ui.modules.core.pattern.logger" name="Logger" entity-id="876dc083-6b75-4eb0-8d41-a208ca268fb3">
+                <properties>
+                    <property value="Key1: #[header:invocation:topicId] - Key2: #[groovy:String.valueOf(payload)]" name="message"/>
+                    <property value="ERROR" name="level"/>
+                    <property name="category"/>
+                </properties>
+            </pattern>
+            <unknown entity-id="363d9032-70f2-497b-9ea3-36e029aa6ef2">
+                <content>&lt;bridgetable:upsert-by-key1 xmlns:bridgetable=&quot;http://www.mulesoft.org/schema/mule/bridgetable&quot; key1=&quot;#[header:invocation:topicId]&quot; key2=&quot;#[groovy:String.valueOf(payload)]&quot; config-ref=&quot;topicId_messageId&quot;/&gt;</content>
+            </unknown>
+        </lane>
+    </flow>
+    <flow SubFlow="false" name="migrateBridgeTables2">
+        <properties>
+            <property name="processingStrategy2"/>
+            <property name="processingStrategy"/>
+        </properties>
+        <lane entity-id="c5739627-311d-4709-abb3-47caacdebe4f">
+            <endpoint message-exchange-pattern="OneWay" direction="Inbound" type="http://www.mulesoft.org/schema/mule/http/endpoint" name="HTTP" entity-id="0a03f0c2-4cbf-40aa-ac89-7b1f089ae4a2">
+                <properties>
+                    <property value="one-way" name="exchange-pattern"/>
+                    <property value="request-response" name="exchange-pattern"/>
+                    <property value="http://www.mulesoft.org/schema/mule/http/endpoint" name="org.mule.tooling.ui.modules.core.widgets.meta.ModeAttribute"/>
+                    <property name="httpLabel"/>
+                    <property value="localhost" name="host"/>
+                    <property value="${http.port}" name="port"/>
+                    <property value="migrate2" name="path"/>
+                    <property name="method"/>
+                    <property name="address"/>
+                    <property name="responseTimeout"/>
+                    <property name="encoding"/>
+                    <property name="disableTransportTransformer"/>
+                    <property name="mimeType"/>
+                    <property name="followRedirects"/>
+                    <property name="ref"/>
+                    <property name="connector-ref"/>
+                    <property name="transformer-refs"/>
+                    <property name="responseTransformer-refs"/>
+                    <property name="user"/>
+                    <property name="password"/>
+                    <property name="contentType"/>
+                    <property name="keep-alive"/>
+                </properties>
+            </endpoint>
+            <unknown entity-id="43b631ee-0874-4fce-94c3-d89c71850fa3">
+                <content>&lt;objectstore:all-keys xmlns:objectstore=&quot;http://www.mulesoft.org/schema/mule/objectstore&quot; config-ref=&quot;replyMessageIds&quot;/&gt;</content>
+            </unknown>
+            <pattern type="http://www.mulesoft.org/schema/mule/core/collection-splitter" name="Collection Splitter" entity-id="0703b78e-edb0-4056-8104-e11af03376fe">
+                <properties>
+                    <property name="enableCorrelation"/>
+                </properties>
+            </pattern>
+            <pattern type="http://www.mulesoft.org/schema/mule/core/message-properties-transformer" name="Message Properties" entity-id="56306170-0b94-4d2d-8523-e632f41f54f5">
+                <properties>
+                    <property name="returnClass"/>
+                    <property name="ignoreBadInput"/>
+                    <property name="encoding"/>
+                    <property name="mimeType"/>
+                    <property name="overwrite"/>
+                    <property value="invocation" name="scope"/>
+                    <property-collection name="@http://www.mulesoft.org/schema/mule/core/add-message-property;0">
+                        <property value="#[payload:]" name="value"/>
+                        <property value="replyId" name="key"/>
+                    </property-collection>
+                </properties>
+            </pattern>
+            <unknown entity-id="4f70fbc0-a6de-4821-bdc4-fab9b0563f10">
+                <content>&lt;objectstore:retrieve xmlns:objectstore=&quot;http://www.mulesoft.org/schema/mule/objectstore&quot; key=&quot;#[header:invocation:replyId]&quot; config-ref=&quot;replyMessageIds&quot;/&gt;</content>
+            </unknown>
+            <pattern type="org.mule.tooling.ui.modules.core.pattern.logger" name="Logger" entity-id="3039e2a2-6dc7-4d89-bb46-b891d4d1f9a8">
+                <properties>
+                    <property value="Key1: #[header:invocation:replyId] - Key2: #[groovy:String.valueOf(payload)]" name="message"/>
+                    <property value="ERROR" name="level"/>
+                    <property name="category"/>
+                </properties>
+            </pattern>
+            <unknown entity-id="6e14c0bf-638b-4ce7-9367-4bc6e7ed2f9b">
+                <content>&lt;bridgetable:upsert-by-key1 xmlns:bridgetable=&quot;http://www.mulesoft.org/schema/mule/bridgetable&quot; key1=&quot;#[header:invocation:replyId]&quot; key2=&quot;#[groovy:String.valueOf(payload)]&quot; config-ref=&quot;replyId_messageId&quot;/&gt;</content>
+            </unknown>
+        </lane>
+    </flow>
+    <description></description>
+</mule-configuration>

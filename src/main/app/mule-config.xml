@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:bridgetable="http://www.mulesoft.org/schema/mule/bridgetable" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore" xmlns:pop3s="http://www.mulesoft.org/schema/mule/pop3s" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:getsatisfaction="http://www.mulesoft.org/schema/mule/getsatisfaction" xmlns:ldap="http://www.mulesoft.org/schema/mule/ldap" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="CE-3.2.1" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/pop3s http://www.mulesoft.org/schema/mule/pop3s/current/mule-pop3s.xsd 
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd 
+http://www.mulesoft.org/schema/mule/getsatisfaction http://www.mulesoft.org/schema/mule/getsatisfaction/current/mule-getsatisfaction.xsd 
+http://www.mulesoft.org/schema/mule/ldap http://www.mulesoft.org/schema/mule/ldap/current/mule-ldap.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/bridgetable http://www.mulesoft.org/schema/mule/bridgetable/current/mule-bridgetable.xsd
+http://www.mulesoft.org/schema/mule/objectstore http://www.mulesoft.org/schema/mule/objectstore/current/mule-objectstore.xsd">
+        
+         <configuration>
+         	  <default-threading-profile maxThreadsActive="2" poolExhaustedAction="WAIT" threadWaitTimeout="-1"/>
+         </configuration>
+
+    <spring:beans>
+        <spring:bean id="configProperties" name="configProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" doc:name="Global Configuration">
+            <spring:property name="location" value="classpath:config.properties"/>
+        </spring:bean>
+
+	<!-- JDBC Mappings configuration -->
+    <spring:bean id="jdbcDataSource" 
+        class="org.enhydra.jdbc.standard.StandardDataSource"
+        destroy-method="shutdown">
+        <spring:property name="driverName" value="${database.driver}"/>
+        <spring:property name="url" value="${database.connection}"/>
+    </spring:bean>
+    
+    <bridgetable:config name="topicId_messageId" key1Type="STRING" key2Type="STRING" key1Name="key1" key2Name="key2" tableName="topicId_messageId" type="DATA_SOURCE" dataSource-ref="jdbcDataSource" autoCreateTable="true"/>
+	
+	<bridgetable:config name="replyId_messageId" key1Type="STRING" key2Type="STRING" key1Name="key1" key2Name="key2" tableName="replyId_messageId" type="DATA_SOURCE" dataSource-ref="jdbcDataSource" autoCreateTable="true"/>
+	            
+        <spring:bean id="communityUser" class="org.mule.module.getsatisfaction.getsatisfaction.api.User" doc:name="Default Community User" >
+        	<spring:property name="uid" value="${community.user.uid}"/>
+        	<spring:property name="fullName" value="${community.user.fullName}"/>
+        	<spring:property name="email" value="${community.user.email}"/>
+        </spring:bean>
+        
+		<spring:bean name="listMappings" class="java.util.HashMap">
+			<spring:constructor-arg>
+				<spring:map>
+					<spring:entry key="praise" value="${list.email.address.praise}" />
+					<spring:entry key="subject.praise" value="${list.email.subject.prefix.praise}" />
+					<spring:entry key="question" value="${list.email.address.question}" />
+					<spring:entry key="idea" value="${list.email.address.idea}" />
+					<spring:entry key="problem" value="${list.email.address.problem}" />
+					<spring:entry key="subject.question" value="${list.email.subject.prefix.question}" />
+					<spring:entry key="subject.idea" value="${list.email.subject.prefix.idea}" />
+					<spring:entry key="subject.problem" value="${list.email.subject.prefix.problem}" />
+				</spring:map>
+			</spring:constructor-arg>
+		</spring:bean>        
+    </spring:beans>
+    <objectstore:config name="pollingConfig" partition="pollingConfig" persistent="true"/>
+    <objectstore:config name="topicIds" partition="topicIds" persistent="true"/>
+    <objectstore:config name="messageIds" partition="messageIds" persistent="true"/>
+    <objectstore:config name="replyMessageIds" partition="replyMessageIds" persistent="true"/>
+    <ldap:config name="ldap" url="${ldap.url}" authentication="simple" authDn="${ldap.userDn}" authPassword="${ldap.password}"></ldap:config>
+    <smtp:gmail-connector name="emailSender" doc:name="Gmail" contentType="text/html"/>
+    <pop3s:connector name="emailReceiver" checkFrequency="${gateway.email.polling.frequency}" doc:name="Email Sender"/>
+    <getsatisfaction:config name="getSatisfaction" key="1fjo088bougl" secret="aqfi8q65z031wlhqsrj37rhuv1qlwy78" company="mulesoft"></getsatisfaction:config>
+    <custom-transformer class="org.mule.egateway.transformers.ForumPostToEmailMessage" name="ForumPostToEmailMessage" doc:name="Forum post to email message"/>
+    <custom-transformer class="org.mule.egateway.transformers.ForumReplyToEmailMessage" name="ForumReplyToEmailMessage" doc:name="Forum reply to email message"/>
+
+    <flow name="email-to-forum" doc:name="email-to-forum">
+        <pop3s:inbound-endpoint host="${gateway.email.reader.host}" port="${gateway.email.reader.port}" user="${gateway.email.user}" password="${gateway.email.password}" connector-ref="emailReceiver" doc:name="Pop3"/>
+		<enricher target="#[variable:ldapUser]">
+			<processor-chain>
+	       		<ldap:search-one config-ref="ldap" baseDn="ou=People,dc=muleforge,dc=org" filter="#[groovy:'(mail=' + org.mule.egateway.transformers.EmailMessageToForumPost.getFromAddress(message) + ')']"></ldap:search-one>
+	       		<ldap:ldap-entry-to-map/>
+			</processor-chain>
+   		</enricher>
+        <custom-transformer class="org.mule.egateway.transformers.EmailMessageToForumPost" doc:name="Email message to forum post"/>
+        <payload-type-filter expectedType="org.mule.module.getsatisfaction.getsatisfaction.api.Post" doc:name="Payload"/>
+        <choice doc:name="Choice">
+            <when expression="payload.isTopic()" evaluator="groovy">
+            	<processor-chain>
+	            	<getsatisfaction:create-topic config-ref="getSatisfaction" style="#[groovy:payload.style.toUpperCase()]" email="#[groovy:payload.user.email]" uid="#[groovy:payload.user.uid]" fullName="#[groovy:payload.user.fullName]" subject="#[groovy:payload.subject]" content="#[groovy:payload.content]">
+	            		<getsatisfaction:product-ids>
+	            			<getsatisfaction:product-id>Mule ESB</getsatisfaction:product-id>
+	            		</getsatisfaction:product-ids>
+	            	</getsatisfaction:create-topic>
+	            	<logger level="INFO" message="topicIds[messageId -> topicId] => [#[header:outbound:Message-ID]] -> [#[groovy:payload.id.toString()]]" />
+	            	<logger level="INFO" message="messageIds[topicId -> messageId] => [#[groovy:payload.id.toString()]] -> [#[header:outbound:Message-ID]]" />
+	            	<objectstore:store config-ref="topicIds" key="#[header:outbound:Message-ID]" value-ref="#[groovy:payload.id.toString()]"/>
+	            	<objectstore:store config-ref="messageIds" key="#[groovy:payload.id.toString()]" value-ref="#[header:outbound:Message-ID]"/>
+	            	
+	            	<bridgetable:insert key1="#[groovy:payload.id.toString()]" key2="#[header:outbound:Message-ID]" config-ref="topicId_messageId"/>
+            	</processor-chain>
+            </when>
+            <when expression="payload.isReply()" evaluator="groovy">
+            	<processor-chain>
+	            	<getsatisfaction:create-reply config-ref="getSatisfaction" email="#[groovy:payload.user.email]" uid="#[groovy:payload.user.uid]" fullName="#[groovy:payload.user.fullName]" topicId="#[groovy:String.valueOf(payload.topicId)]" content="#[groovy:payload.content]"/>
+	            	<logger level="INFO" message="replyMessageIds[replyId -> messageId] => [#[groovy:payload.id]] -> [#[header:outbound:Message-ID]]" />
+	            	<objectstore:store config-ref="replyMessageIds" key="#[groovy:payload.id]" value-ref="#[header:outbound:Message-ID]"/>
+	            	<bridgetable:insert key1="#[groovy:payload.id]" key2="#[header:outbound:Message-ID]" config-ref="replyId_messageId"/>
+	            </processor-chain>
+            </when>
+            <otherwise>
+            	<logger message="Invalid payload type #[groovy:payload.getClass().getName()]" level="WARN" />
+            </otherwise>
+        </choice>
+        
+    </flow>
+    <flow name="forum-to-email" doc:name="forum-to-email">
+        <poll frequency="${gateway.forum.polling.frequency}">
+           <objectstore:retrieve config-ref="pollingConfig" key="lastPoll" defaultValue-ref="#[groovy:String.valueOf((long)(System.currentTimeMillis() / 1000))]"/>
+        </poll>
+        <message-properties-transformer scope="invocation" doc:name="New last poll value">
+        	<add-message-property key="lastPoll" value="#[payload:]"/>
+            <add-message-property key="newLastPoll" value="#[groovy:String.valueOf((long)(System.currentTimeMillis() / 1000))]"/>
+        </message-properties-transformer>		        
+		<objectstore:store config-ref="pollingConfig" key="lastPoll" value-ref="#[header:invocation:lastPoll]" overwrite="true"/>
+        <getsatisfaction:search-topics email="${community.user.email}" uid="${community.user.uid}" fullName="${community.user.fullName}" config-ref="getSatisfaction" filter="#[groovy:'active_since=' + payload]"/>
+        <expression-filter evaluator="groovy" expression="payload != null &amp;&amp; payload instanceof java.util.Collection &amp;&amp; payload.size() &gt; 0" doc:name="Expression"/>
+        <collection-splitter doc:name="Collection Splitter"/>
+		<all>
+			<processor-chain>
+		        <objectstore:store config-ref="pollingConfig" key="lastPoll" value-ref="#[header:invocation:newLastPoll]" overwrite="true"/>
+		        
+		        <custom-transformer class="org.mule.egateway.transformers.DuplicatedTopicTransformer" doc:name="Email message to forum post"/>
+		        <payload-type-filter expectedType="org.mule.module.getsatisfaction.getsatisfaction.api.Post" doc:name="Payload"/>
+		        <logger level="INFO" message="Sending topic email: #[payload:]" />
+		        <smtp:outbound-endpoint transformer-refs="ForumPostToEmailMessage" host="${gateway.email.sender.host}" port="${gateway.email.sender.port}" user="${gateway.email.user}" password="${gateway.email.password}" connector-ref="emailSender" doc:name="SMTP Outbound"/>
+			</processor-chain>
+			<processor-chain>
+				<enricher target="#[variable:replies]">
+					<processor-chain>
+				        <getsatisfaction:get-topic-replies email="${community.user.email}" uid="${community.user.uid}" fullName="${community.user.fullName}" config-ref="getSatisfaction" topicId="#[groovy:String.valueOf(payload.id)]"/>
+					</processor-chain>
+		   		</enricher>
+		        <custom-transformer class="org.mule.egateway.transformers.AllRepliesToNewReplies" doc:name="Email message to forum post"/>
+		        <payload-type-filter expectedType="java.util.List" doc:name="Payload"/>
+		        <collection-splitter doc:name="Collection Splitter"/>
+		        <custom-transformer class="org.mule.egateway.transformers.DuplicatedReplyTransformer" doc:name="Email message to forum post"/>
+		        <payload-type-filter expectedType="org.mule.module.getsatisfaction.getsatisfaction.api.Post" doc:name="Payload"/>
+		        <logger level="INFO" message="Sending reply email: #[payload:]" />
+		        <smtp:outbound-endpoint transformer-refs="ForumReplyToEmailMessage" host="${gateway.email.sender.host}" port="${gateway.email.sender.port}" user="${gateway.email.user}" password="${gateway.email.password}" connector-ref="emailSender" doc:name="SMTP Outbound"/>
+			</processor-chain>
+		</all>
+    </flow>
+
+    <flow name="migrateBridgeTables1">
+    	<http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="${http.port}" path="migrate1"/>
+    	<objectstore:all-keys config-ref="messageIds"/>
+    	<collection-splitter doc:name="Collection Splitter"/>
+        <message-properties-transformer scope="invocation">
+        	<add-message-property key="topicId" value="#[payload:]"/>
+        </message-properties-transformer>
+    	<objectstore:retrieve key="#[header:invocation:topicId]" config-ref="messageIds"/>
+    	<logger level="ERROR" message="Key1: #[header:invocation:topicId] - Key2: #[groovy:String.valueOf(payload)]"/>
+    	<bridgetable:upsert-by-key1 key1="#[header:invocation:topicId]" key2="#[groovy:String.valueOf(payload)]" config-ref="topicId_messageId"/>
+    </flow>
+
+    <flow name="migrateBridgeTables2">
+    	<http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="${http.port}" path="migrate2"/>
+    	
+    	<objectstore:all-keys config-ref="replyMessageIds"/>
+    	<collection-splitter doc:name="Collection Splitter"/>
+        <message-properties-transformer scope="invocation">
+        	<add-message-property key="replyId" value="#[payload:]"/>
+        </message-properties-transformer>
+    	<objectstore:retrieve key="#[header:invocation:replyId]" config-ref="replyMessageIds"/>
+    	<logger level="ERROR" message="Key1: #[header:invocation:replyId] - Key2: #[groovy:String.valueOf(payload)]"/>
+    	<bridgetable:upsert-by-key1 key1="#[header:invocation:replyId]" key2="#[groovy:String.valueOf(payload)]" config-ref="replyId_messageId"/>    	
+    </flow>
+
+</mule>
